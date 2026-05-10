@@ -1,51 +1,21 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useUserPosts } from '@/app/hooks/useUserPosts';
 import PostCard from './PostCard';
-
-interface Author {
-  user_id: string;
-  username: string;
-  profile_picture: string | null;
-}
-
-interface Post {
-  postId: string;
-  authorId: string;
-  content: string;
-  createdAt: string;
-  likeCount: number;
-  author: Author;
-}
 
 interface PostListProps {
   userId: string;
 }
 
 export default function PostList({ userId }: PostListProps) {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`/api/posts/user/${userId}`);
-      if (!response.ok) throw new Error('Failed to fetch posts');
-      const data = await response.json();
-      setPosts(data.posts || []);
-    } catch (error) {
-      console.error('Error fetching posts');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, [userId]);
+  const { posts, loading, error, refresh } = useUserPosts(userId);
 
   if (loading) {
     return <div className="text-center py-8">Loading posts...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center py-8 text-red-600">{error}</div>;
   }
 
   if (posts.length === 0) {
@@ -58,7 +28,7 @@ export default function PostList({ userId }: PostListProps) {
         <PostCard
           key={post.postId}
           post={post}
-          onDelete={fetchPosts}
+          onDelete={() => refresh()}
           onLikeToggle={() => {}}
         />
       ))}

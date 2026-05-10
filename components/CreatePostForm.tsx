@@ -11,6 +11,7 @@ export default function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,8 +28,14 @@ export default function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
       });
 
       if (!response.ok) throw new Error('Failed to create post');
+      
       setContent('');
+      setSuccess(true);
       onPostCreated();
+      
+      setTimeout(() => {
+        setSuccess(false);
+      }, 1000);
     } catch (err) {
       setError('Failed to create post');
     } finally {
@@ -46,6 +53,7 @@ export default function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
       />
       {error && <div className="mt-2 text-red-600 text-sm">{error}</div>}
+      {success && <div className="mt-2 text-green-600 text-sm">Post created!</div>}
       <div className="mt-3 flex justify-end">
         <button
           type="submit"

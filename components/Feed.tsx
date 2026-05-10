@@ -1,51 +1,18 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useFeedPosts } from '@/app/hooks/useFeedPosts';
 import CreatePostForm from './CreatePostForm';
 import PostCard from './PostCard';
 
-interface Post {
-  postId: string;
-  authorId: string;
-  content: string;
-  createdAt: string;
-  likeCount: number;
-  author: {
-    user_id: string;
-    username: string;
-    profile_picture: string | null;
-  };
-}
-
 export default function Feed() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchFeed = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch('/api/posts/feed');
-      if (!response.ok) throw new Error('Failed to fetch feed');
-      const data = await response.json();
-      setPosts(data.posts || []);
-    } catch (err) {
-      setError('Failed to load feed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchFeed();
-  }, []);
+  const { posts, loading, error, refresh } = useFeedPosts();
 
   const handlePostCreated = () => {
-    fetchFeed();
+    refresh();
   };
 
   const handlePostDeleted = () => {
-    fetchFeed();
+    refresh();
   };
 
   if (loading) {
