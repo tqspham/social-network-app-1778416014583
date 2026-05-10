@@ -34,11 +34,8 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    if (connectedUserIds.size === 0) {
-      return NextResponse.json({ posts: [] });
-    }
-
     const userIdArray = Array.from(connectedUserIds);
+    userIdArray.push(userId);
 
     const { data: posts, error: postsError } = await supabase
       .from('social_network_app_1778416014583_posts')
