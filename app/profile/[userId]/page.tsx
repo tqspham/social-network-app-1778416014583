@@ -2,6 +2,7 @@ import { getSessionUserId } from '@/app/lib/auth';
 import Navbar from '@/components/Navbar';
 import ProfileCard from '@/components/ProfileCard';
 import ConnectionButton from '@/components/ConnectionButton';
+import PostList from '@/components/PostList';
 import { redirect } from 'next/navigation';
 
 interface ProfilePageProps {
@@ -38,5 +39,3 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     </div>
   );
 }
-
-import PostList from '@/components/PostList';
