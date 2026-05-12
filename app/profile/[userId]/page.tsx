@@ -3,31 +3,18 @@ import Navbar from '@/components/Navbar';
 import ProfileCard from '@/components/ProfileCard';
 import PostList from '@/components/PostList';
 import ConnectionButton from '@/components/ConnectionButton';
-import { supabase } from '@/lib/supabase';
+import { redirect } from 'next/navigation';
 
 interface ProfilePageProps {
-  params: { userId: string };
+  params: Promise<{ userId: string }>;
 }
 
 export default async function ProfilePage({ params }: ProfilePageProps) {
-  const { userId } = params;
+  const { userId } = await params;
   const currentUserId = await getSessionUserId();
 
-  const { data: user, error } = await supabase
-    .from('social_network_app_1778416014583_users')
-    .select('user_id')
-    .eq('user_id', userId)
-    .single();
-
-  if (error || !user) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <main className="container mx-auto px-4 py-8">
-          <p className="text-center text-gray-600">User not found</p>
-        </main>
-      </div>
-    );
+  if (!currentUserId) {
+    redirect('/auth/login');
   }
 
   const isOwn = currentUserId === userId;
@@ -38,7 +25,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <ProfileCard userId={userId} isOwn={isOwn} />
-          {!isOwn && currentUserId && (
+          {!isOwn && (
             <div className="mt-4">
               <ConnectionButton targetUserId={userId} onSuccess={() => {}} />
             </div>

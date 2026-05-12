@@ -6,11 +6,11 @@ import { Edit2 } from 'lucide-react';
 import EditProfileModal from './EditProfileModal';
 
 interface User {
-  userId: string;
-  email: string;
+  user_id: string;
+  email?: string;
   username: string;
   bio: string;
-  profilePicture: string | null;
+  profile_picture: string | null;
 }
 
 interface ProfileCardProps {
@@ -21,24 +21,35 @@ interface ProfileCardProps {
 export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   const fetchProfile = async () => {
     try {
       setLoading(true);
+      setError(null);
       const url = isOwn ? '/api/profile' : `/api/profile/${userId}`;
       const response = await fetch(url);
-      if (!response.ok) throw new Error('Failed to fetch profile');
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError('User not found');
+        } else {
+          throw new Error('Failed to fetch profile');
+        }
+        setUser(null);
+        return;
+      }
       const data = await response.json();
       setUser({
-        userId: data.user_id,
-        email: data.email || '',
+        user_id: data.user_id,
+        email: data.email,
         username: data.username,
         bio: data.bio,
-        profilePicture: data.profile_picture,
+        profile_picture: data.profile_picture,
       });
-    } catch (error) {
-      console.error('Error fetching profile');
+    } catch (err) {
+      setError('Failed to load profile');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -57,6 +68,17 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
     return <div className="text-center py-8">Loading profile...</div>;
   }
 
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600 mb-4">{error}</p>
+        <Link href="/search" className="text-blue-600 hover:underline">
+          Back to search
+        </Link>
+      </div>
+    );
+  }
+
   if (!user) {
     return <div className="text-center py-8 text-red-600">Profile not found</div>;
   }
@@ -70,7 +92,7 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
           </div>
           <div>
             <h1 className="text-2xl font-bold">{user.username}</h1>
-            {isOwn && <p className="text-gray-600 text-sm">{user.email}</p>}
+            {isOwn && user.email && <p className="text-gray-600 text-sm">{user.email}</p>}
             <p className="text-gray-600 mt-2">{user.bio}</p>
           </div>
         </div>
