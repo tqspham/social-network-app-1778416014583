@@ -1,6 +1,6 @@
 "use client";
 
-import ProfileCard from './ProfileCard';
+import Link from 'next/link';
 
 interface User {
   user_id: string;
@@ -23,12 +23,12 @@ export default function SearchResults({ results }: SearchResultsProps) {
               <h3 className="text-lg font-bold">{user.username}</h3>
               {user.bio && <p className="text-gray-600">{user.bio}</p>}
             </div>
-            <a
+            <Link
               href={`/profile/${user.user_id}`}
               className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
             >
               View Profile
-            </a>
+            </Link>
           </div>
         </div>
       ))}
