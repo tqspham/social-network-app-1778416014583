@@ -23,6 +23,23 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSessionUserId = async () => {
+      try {
+        const response = await fetch('/api/profile');
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentUserId(data.user_id || null);
+        }
+      } catch (err) {
+        // Silently fail to fetch current user ID
+      }
+    };
+
+    fetchSessionUserId();
+  }, []);
 
   const fetchProfile = async () => {
     try {
@@ -30,16 +47,26 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
       setError(null);
       const url = isOwn ? '/api/profile' : `/api/profile/${userId}`;
       const response = await fetch(url);
+
       if (!response.ok) {
         if (response.status === 404) {
           setError('User not found');
         } else {
-          throw new Error('Failed to fetch profile');
+          setError('Failed to load profile');
         }
         setUser(null);
         return;
       }
+
       const data = await response.json();
+
+      // Validate that data contains expected user fields
+      if (!data.user_id || !data.username) {
+        setError('User not found');
+        setUser(null);
+        return;
+      }
+
       setUser({
         user_id: data.user_id,
         email: data.email,
@@ -80,7 +107,14 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
   }
 
   if (!user) {
-    return <div className="text-center py-8 text-red-600">Profile not found</div>;
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600 mb-4">User not found</p>
+        <Link href="/search" className="text-blue-600 hover:underline">
+          Back to search
+        </Link>
+      </div>
+    );
   }
 
   return (

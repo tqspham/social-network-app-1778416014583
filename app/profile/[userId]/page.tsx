@@ -4,6 +4,7 @@ import ProfileCard from '@/components/ProfileCard';
 import ConnectionButton from '@/components/ConnectionButton';
 import PostList from '@/components/PostList';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 interface ProfilePageProps {
   params: Promise<{ userId: string }>;
