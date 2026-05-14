@@ -5,15 +5,12 @@ import { UserPlus } from 'lucide-react';
 
 interface ConnectionButtonProps {
   targetUserId: string;
-  onSuccess: () => void;
 }
 
 export default function ConnectionButton({
   targetUserId,
-  onSuccess,
 }: ConnectionButtonProps) {
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const [connectionStatus, setConnectionStatus] = useState<'none' | 'pending' | 'accepted'>('none');
@@ -74,9 +71,7 @@ export default function ConnectionButton({
         throw new Error(data.error || 'Failed to send request');
       }
 
-      setConnectionStatus('pending');
-      setSent(true);
-      onSuccess();
+      await checkConnectionStatus();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send request');
     } finally {

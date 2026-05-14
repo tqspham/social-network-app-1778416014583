@@ -28,7 +28,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
           <ProfileCard userId={userId} isOwn={isOwn} />
           {!isOwn && (
             <div className="mt-4">
-              <ConnectionButton targetUserId={userId} onSuccess={() => {}} />
+              <ConnectionButton targetUserId={userId} />
             </div>
           )}
           <div className="mt-8">
