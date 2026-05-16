@@ -141,7 +141,7 @@ h3 {
   }
 
   .input-base {
-    @apply w-full px-3 py-3 rounded-lg font-base transition;
+    @apply w-full px-3 py-3 rounded-lg transition;
     background-color: var(--color-surface);
     border: 1px solid var(--color-border);
     color: var(--color-text);
