@@ -13,6 +13,21 @@ interface PendingRequest {
   };
 }
 
+function getAvatarColor(userId: string): string {
+  const colors = [
+    '#2A5F4A',
+    '#D4A574',
+    '#E07856',
+    '#4A8F5E',
+    '#C89A4B',
+  ];
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+}
+
 export default function PendingRequests() {
   const [requests, setRequests] = useState<PendingRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,38 +80,49 @@ export default function PendingRequests() {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading requests...</div>;
+    return <div className="text-center py-4 text-muted">Loading requests...</div>;
   }
 
   if (requests.length === 0) {
-    return <div className="text-gray-600">No pending requests</div>;
+    return <div className="text-muted">No pending requests</div>;
   }
 
   return (
     <ul className="space-y-3">
-      {requests.map((request) => (
-        <li key={request.requestId} className="bg-white border border-gray-200 p-3 rounded-lg">
-          <div className="flex justify-between items-start">
-            <Link href={`/profile/${request.user.user_id}`} className="text-blue-600 hover:underline font-medium">
-              {request.user.username}
-            </Link>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleAccept(request.requestId)}
-                className="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleReject(request.requestId)}
-                className="text-sm border border-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-100 transition"
-              >
-                Reject
-              </button>
+      {requests.map((request) => {
+        const avatarColor = getAvatarColor(request.user.user_id);
+        return (
+          <li key={request.requestId} className="bg-surface border-card p-4 rounded-lg">
+            <div className="flex justify-between items-start gap-3">
+              <div className="flex items-start gap-3 flex-1">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                  style={{ backgroundColor: avatarColor }}
+                >
+                  {request.user.username.charAt(0).toUpperCase()}
+                </div>
+                <Link href={`/profile/${request.user.user_id}`} className="text-primary hover:text-accent transition font-bold text-base">
+                  {request.user.username}
+                </Link>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => handleAccept(request.requestId)}
+                  className="text-sm btn-primary"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleReject(request.requestId)}
+                  className="text-sm btn-outline"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
-          </div>
-        </li>
-      ))}
+          </li>
+        );
+      })}
     </ul>
   );
 }

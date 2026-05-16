@@ -71,51 +71,51 @@ export default function EditProfileModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Edit Profile</h2>
-          <button onClick={onClose}>
+      <div className="bg-surface rounded-lg p-8 max-w-md w-full border-card">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-display-sm text-primary">Edit Profile</h2>
+          <button onClick={onClose} className="text-muted hover:text-primary transition">
             <X size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-primary mb-2">Username</label>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="input-base"
             />
           </div>
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+          <div className="mb-8">
+            <label className="block text-sm font-medium text-primary mb-2">Bio</label>
             <textarea
               name="bio"
               value={formData.bio}
               onChange={handleChange}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="w-full px-3 py-3 border-card rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none bg-page"
             />
           </div>
 
-          {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
+          {error && <div className="mb-4 text-danger text-sm font-medium">{error}</div>}
 
           <div className="flex gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition"
+              className="flex-1 btn-outline"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+              className="flex-1 btn-primary disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
               {loading ? 'Saving...' : 'Save'}
             </button>

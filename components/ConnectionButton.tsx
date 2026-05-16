@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { UserPlus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface ConnectionButtonProps {
   targetUserId: string;
@@ -80,28 +81,30 @@ export default function ConnectionButton({
   };
 
   if (checkingStatus) {
-    return <div className="text-center py-2">Checking connection status...</div>;
+    return <div className="text-center py-2 text-muted text-sm">Checking...</div>;
   }
 
   if (connectionStatus === 'accepted') {
     return (
-      <div className="flex items-center gap-2 bg-green-100 text-green-700 py-2 px-4 rounded-lg">
-        <span className="text-sm">Connected</span>
+      <div className="flex items-center gap-2 bg-success bg-opacity-10 text-success py-2 px-4 rounded-lg font-medium text-sm">
+        Connected
       </div>
     );
   }
 
   return (
     <div>
-      {error && <div className="mb-2 text-red-600 text-sm">{error}</div>}
-      <button
+      {error && <div className="mb-2 text-danger text-sm font-medium">{error}</div>}
+      <motion.button
         onClick={handleSendRequest}
         disabled={loading || connectionStatus === 'pending'}
-        className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+        whileHover={!loading && connectionStatus !== 'pending' ? { scale: 1.02 } : {}}
+        whileTap={!loading && connectionStatus !== 'pending' ? { scale: 0.98 } : {}}
+        className="w-full flex items-center justify-center gap-2 btn-secondary disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
         <UserPlus size={16} />
         {connectionStatus === 'pending' ? 'Request Sent' : 'Send Connection Request'}
-      </button>
+      </motion.button>
     </div>
   );
 }

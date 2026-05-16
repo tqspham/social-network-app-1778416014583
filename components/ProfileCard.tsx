@@ -18,28 +18,26 @@ interface ProfileCardProps {
   isOwn: boolean;
 }
 
+function getAvatarColor(userId: string): string {
+  const colors = [
+    '#2A5F4A',
+    '#D4A574',
+    '#E07856',
+    '#4A8F5E',
+    '#C89A4B',
+  ];
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+}
+
 export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchSessionUserId = async () => {
-      try {
-        const response = await fetch('/api/profile');
-        if (response.ok) {
-          const data = await response.json();
-          setCurrentUserId(data.user_id || null);
-        }
-      } catch (err) {
-        // Silently fail to fetch current user ID
-      }
-    };
-
-    fetchSessionUserId();
-  }, []);
 
   const fetchProfile = async () => {
     try {
@@ -60,7 +58,6 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
 
       const data = await response.json();
 
-      // Validate that data contains expected user fields
       if (!data.user_id || !data.username) {
         setError('User not found');
         setUser(null);
@@ -92,14 +89,14 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading profile...</div>;
+    return <div className="text-center py-12 text-muted">Loading profile...</div>;
   }
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-600 mb-4">{error}</p>
-        <Link href="/search" className="text-blue-600 hover:underline">
+      <div className="text-center py-12">
+        <p className="text-danger mb-4 font-medium">{error}</p>
+        <Link href="/search" className="text-primary hover:text-accent transition font-medium">
           Back to search
         </Link>
       </div>
@@ -108,35 +105,42 @@ export default function ProfileCard({ userId, isOwn }: ProfileCardProps) {
 
   if (!user) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-600 mb-4">User not found</p>
-        <Link href="/search" className="text-blue-600 hover:underline">
+      <div className="text-center py-12">
+        <p className="text-danger mb-4 font-medium">User not found</p>
+        <Link href="/search" className="text-primary hover:text-accent transition font-medium">
           Back to search
         </Link>
       </div>
     );
   }
 
+  const avatarColor = getAvatarColor(user.user_id);
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start gap-4">
-          <div className="w-20 h-20 bg-gray-300 rounded-full flex items-center justify-center text-2xl font-bold">
-            {user.username.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{user.username}</h1>
-            {isOwn && user.email && <p className="text-gray-600 text-sm">{user.email}</p>}
-            <p className="text-gray-600 mt-2">{user.bio}</p>
-          </div>
+    <div className="bg-surface border-card rounded-lg p-8">
+      <div className="flex items-start gap-8">
+        <div
+          className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-bold text-white flex-shrink-0"
+          style={{ backgroundColor: avatarColor }}
+        >
+          {user.username.charAt(0).toUpperCase()}
+        </div>
+        <div className="flex-1">
+          <h1 className="text-display-sm text-primary">{user.username}</h1>
+          {isOwn && user.email && (
+            <p className="text-muted text-sm mt-1">{user.email}</p>
+          )}
+          {user.bio && (
+            <p className="text-secondary mt-3 text-base leading-relaxed">{user.bio}</p>
+          )}
         </div>
         {isOwn && (
           <button
             onClick={() => setEditModalOpen(true)}
-            className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
+            className="flex items-center gap-2 text-primary hover:text-accent transition text-sm font-medium px-3 py-2"
           >
             <Edit2 size={16} />
-            Edit Profile
+            Edit
           </button>
         )}
       </div>

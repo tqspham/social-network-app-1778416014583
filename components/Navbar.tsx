@@ -21,33 +21,21 @@ export default function Navbar() {
     }
   };
 
-  const navLinks = [
-    { href: '/', label: 'Feed' },
-    { href: '/profile', label: 'Profile' },
-    { href: '/connections', label: 'Connections' },
-    { href: '/search', label: 'Search' },
-  ];
-
   return (
-    <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
+    <nav className="border-b border-card bg-surface sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center">
-          <Link href="/" className="text-2xl font-bold text-blue-600">
+          <Link href="/" className="text-display-sm text-primary font-bold">
             SocialNet
           </Link>
 
-          <div className="hidden md:flex gap-6">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-gray-700 hover:text-blue-600 transition">
-                {link.label}
-              </Link>
-            ))}
+          <div className="hidden md:flex gap-8 items-center">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-gray-700 hover:text-red-600 transition"
+              className="flex items-center gap-2 text-muted hover:text-primary transition"
             >
               <LogOut size={18} />
-              Logout
+              <span className="text-sm">Logout</span>
             </button>
           </div>
 
@@ -60,20 +48,38 @@ export default function Navbar() {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden mt-4 flex flex-col gap-4 pb-4">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-gray-700 hover:text-blue-600 transition"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
+          <div className="md:hidden mt-6 flex flex-col gap-4 pb-6 border-t border-card pt-6">
+            <Link
+              href="/"
+              className="text-primary hover:text-accent transition font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Feed
+            </Link>
+            <Link
+              href="/profile"
+              className="text-primary hover:text-accent transition font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Profile
+            </Link>
+            <Link
+              href="/connections"
+              className="text-primary hover:text-accent transition font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Connections
+            </Link>
+            <Link
+              href="/search"
+              className="text-primary hover:text-accent transition font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Search
+            </Link>
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-gray-700 hover:text-red-600 transition text-left"
+              className="flex items-center gap-2 text-muted hover:text-accent transition text-left font-medium"
             >
               <LogOut size={18} />
               Logout
@@ -81,6 +87,25 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      <footer className="hidden md:block border-t border-card bg-surface py-6 mt-12">
+        <div className="container mx-auto px-4">
+          <div className="flex gap-8 justify-center text-sm">
+            <Link href="/" className="text-primary hover:text-accent transition font-medium">
+              Feed
+            </Link>
+            <Link href="/profile" className="text-primary hover:text-accent transition font-medium">
+              Profile
+            </Link>
+            <Link href="/connections" className="text-primary hover:text-accent transition font-medium">
+              Connections
+            </Link>
+            <Link href="/search" className="text-primary hover:text-accent transition font-medium">
+              Search
+            </Link>
+          </div>
+        </div>
+      </footer>
     </nav>
   );
 }

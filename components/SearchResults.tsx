@@ -13,25 +13,51 @@ interface SearchResultsProps {
   results: User[];
 }
 
+function getAvatarColor(userId: string): string {
+  const colors = [
+    '#2A5F4A',
+    '#D4A574',
+    '#E07856',
+    '#4A8F5E',
+    '#C89A4B',
+  ];
+  let hash = 0;
+  for (let i = 0; i < userId.length; i++) {
+    hash = userId.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return colors[Math.abs(hash) % colors.length];
+}
+
 export default function SearchResults({ results }: SearchResultsProps) {
   return (
     <div className="space-y-4">
-      {results.map((user) => (
-        <div key={user.user_id} className="bg-white border border-gray-200 p-4 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-bold">{user.username}</h3>
-              {user.bio && <p className="text-gray-600">{user.bio}</p>}
+      {results.map((user) => {
+        const avatarColor = getAvatarColor(user.user_id);
+        return (
+          <div key={user.user_id} className="bg-surface border-card p-6 rounded-lg">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-4 flex-1">
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-base font-bold text-white flex-shrink-0"
+                  style={{ backgroundColor: avatarColor }}
+                >
+                  {user.username.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h3 className="font-bold text-primary text-lg">{user.username}</h3>
+                  {user.bio && <p className="text-muted text-sm mt-1">{user.bio}</p>}
+                </div>
+              </div>
+              <Link
+                href={`/profile/${user.user_id}`}
+                className="btn-secondary text-sm flex-shrink-0"
+              >
+                View Profile
+              </Link>
             </div>
-            <Link
-              href={`/profile/${user.user_id}`}
-              className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition"
-            >
-              View Profile
-            </Link>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

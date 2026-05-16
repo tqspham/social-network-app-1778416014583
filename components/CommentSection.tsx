@@ -23,6 +23,21 @@ interface CommentSectionProps {
   onCommentAdded: () => void;
 }
 
+function formatTimeAgo(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+  if (seconds < 60) return 'just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 7) return `${days}d ago`;
+  return date.toLocaleDateString();
+}
+
 export default function CommentSection({ postId, onCommentAdded }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,26 +96,21 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
-  };
-
   return (
     <div>
-      <form onSubmit={handleSubmit} className="mb-4">
+      <form onSubmit={handleSubmit} className="mb-5">
         <div className="flex gap-2">
           <input
             type="text"
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             placeholder="Add a comment..."
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600"
+            className="flex-1 px-3 py-2 border-card rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-page"
           />
           <button
             type="submit"
             disabled={submitting || !commentText.trim()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition disabled:bg-gray-400"
+            className="btn-secondary text-sm disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             Post
           </button>
@@ -108,26 +118,26 @@ export default function CommentSection({ postId, onCommentAdded }: CommentSectio
       </form>
 
       {loading ? (
-        <div className="text-sm text-gray-600">Loading comments...</div>
+        <div className="text-sm text-muted">Loading comments...</div>
       ) : comments.length === 0 ? (
-        <div className="text-sm text-gray-600">No comments yet</div>
+        <div className="text-sm text-muted">No comments yet</div>
       ) : (
-        <ul className="space-y-2">
+        <ul className="space-y-3">
           {comments.map((comment) => (
-            <li key={comment.commentId} className="bg-gray-50 p-3 rounded text-sm">
-              <div className="flex justify-between items-start mb-1">
-                <span className="font-medium text-blue-600">{comment.author.username}</span>
+            <li key={comment.commentId} className="bg-page p-3 rounded border-card text-sm">
+              <div className="flex justify-between items-start mb-2">
+                <span className="font-medium text-primary text-sm">{comment.author.username}</span>
                 {currentUserId === comment.authorId && (
                   <button
                     onClick={() => handleDeleteComment(comment.commentId)}
-                    className="text-red-600 hover:bg-red-100 p-1 rounded transition"
+                    className="text-danger hover:bg-red-50 p-1 rounded transition"
                   >
                     <Trash2 size={14} />
                   </button>
                 )}
               </div>
-              <p className="text-gray-800 mb-1">{comment.content}</p>
-              <p className="text-xs text-gray-500">{formatDate(comment.createdAt)}</p>
+              <p className="text-text mb-2">{comment.content}</p>
+              <p className="text-meta text-muted text-xs">{formatTimeAgo(comment.createdAt)}</p>
             </li>
           ))}
         </ul>

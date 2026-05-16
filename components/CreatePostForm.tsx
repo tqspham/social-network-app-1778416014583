@@ -35,7 +35,7 @@ export default function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
       
       setTimeout(() => {
         setSuccess(false);
-      }, 1000);
+      }, 2000);
     } catch (err) {
       setError('Failed to create post');
     } finally {
@@ -44,21 +44,21 @@ export default function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+    <form onSubmit={handleSubmit} className="bg-surface border-card rounded-lg p-6 mb-8">
       <textarea
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="What's on your mind?"
-        rows={3}
-        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 resize-none"
+        placeholder="Share your thoughts..."
+        rows={4}
+        className="w-full px-4 py-3 border-card rounded-lg focus:outline-none focus:ring-2 focus:ring-primary resize-none bg-page"
       />
-      {error && <div className="mt-2 text-red-600 text-sm">{error}</div>}
-      {success && <div className="mt-2 text-green-600 text-sm">Post created!</div>}
-      <div className="mt-3 flex justify-end">
+      {error && <div className="mt-3 text-danger text-sm font-medium">{error}</div>}
+      {success && <div className="mt-3 text-success text-sm font-medium">Post created!</div>}
+      <div className="mt-4 flex justify-end">
         <button
           type="submit"
           disabled={loading || !content.trim()}
-          className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+          className="flex items-center gap-2 btn-secondary disabled:bg-gray-400 disabled:cursor-not-allowed"
         >
           <Send size={16} />
           {loading ? 'Posting...' : 'Post'}

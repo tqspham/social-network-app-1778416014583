@@ -39,27 +39,27 @@ export default function UserSearch() {
 
   return (
     <div>
-      <form onSubmit={handleSearch} className="mb-6">
+      <form onSubmit={handleSearch} className="mb-8">
         <div className="relative">
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by username..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 pr-10"
+            className="input-base pr-10"
           />
           <button
             type="submit"
-            className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition"
           >
             <Search size={20} />
           </button>
         </div>
       </form>
 
-      {loading && <div className="text-center py-8">Searching...</div>}
+      {loading && <div className="text-center py-8 text-muted">Searching...</div>}
       {searched && !loading && results.length === 0 && (
-        <div className="text-center py-8 text-gray-600">No users found</div>
+        <div className="text-center py-8 text-muted">No users found</div>
       )}
       {results.length > 0 && <SearchResults results={results} />}
     </div>

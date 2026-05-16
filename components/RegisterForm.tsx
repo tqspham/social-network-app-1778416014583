@@ -47,56 +47,56 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg border border-gray-200">
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+    <form onSubmit={handleSubmit} className="bg-surface p-8 rounded-lg border-card">
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-primary mb-2">Email</label>
         <input
           type="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="input-base"
         />
       </div>
 
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-primary mb-2">Username</label>
         <input
           type="text"
           name="username"
           value={formData.username}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="input-base"
         />
       </div>
 
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+      <div className="mb-8">
+        <label className="block text-sm font-medium text-primary mb-2">Password</label>
         <input
           type="password"
           name="password"
           value={formData.password}
           onChange={handleChange}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+          className="input-base"
         />
       </div>
 
-      {error && <div className="mb-4 text-red-600 text-sm">{error}</div>}
+      {error && <div className="mb-4 text-danger text-sm font-medium">{error}</div>}
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition disabled:bg-gray-400"
+        className="w-full btn-primary disabled:bg-gray-400 disabled:cursor-not-allowed mb-6"
       >
         {loading ? 'Creating account...' : 'Create Account'}
       </button>
 
-      <p className="mt-4 text-center text-sm text-gray-600">
+      <p className="text-center text-sm text-muted">
         Already have an account?{' '}
-        <Link href="/auth/login" className="text-blue-600 hover:underline">
+        <Link href="/auth/login" className="text-primary hover:text-accent transition font-medium">
           Sign In
         </Link>
       </p>

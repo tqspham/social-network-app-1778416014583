@@ -11,19 +11,19 @@ export default function PostList({ userId }: PostListProps) {
   const { posts, loading, error, refresh } = useUserPosts(userId);
 
   if (loading) {
-    return <div className="text-center py-8">Loading posts...</div>;
+    return <div className="text-center py-8 text-muted">Loading posts...</div>;
   }
 
   if (error) {
-    return <div className="text-center py-8 text-red-600">{error}</div>;
+    return <div className="text-center py-8 text-danger font-medium">{error}</div>;
   }
 
   if (posts.length === 0) {
-    return <div className="text-gray-600 text-center py-8">No posts yet</div>;
+    return <div className="text-muted text-center py-12">No posts yet</div>;
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {posts.map((post) => (
         <PostCard
           key={post.postId}
